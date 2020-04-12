@@ -1,0 +1,143 @@
+<!-- miniprogram/pages/recycleRecords/recycleRecords.wxml -->
+<view class="header">
+    <text>共{{pending+compolish}}条记录,{{compolish}}条已完成,{{pending}}条待处理</text>
+</view>
+<view class="uncomp">
+    <van-row>
+        <van-col span="10" offset="7">
+            <view class="text" style="text-align:center;margin:20rpx;">待处理</view>
+        </van-col>
+    </van-row>
+    <view wx:if="{{uncompleteRecord.length>0}}">
+        <template is="uncompleteRecord" wx:for="{{uncompleteRecord}}" wx:key="{{index}}" data="{{...item ,...{shop: shop} }}"></template>
+    </view>
+    <view wx:else>
+        <van-row>
+            <van-col span="12" offset="6">
+                <view class="noUn">
+                    <van-icon name="passed" size="100px" color="#999"></van-icon>
+                    <view class="info">没有待处理的记录!</view>
+                </view>
+            </van-col>
+        </van-row>
+    </view>
+</view>
+<view class="comp">
+    <van-row>
+        <van-col span="10" offset="7">
+            <view class="text" style="text-align:center;margin:20rpx;">已完成</view>
+        </van-col>
+    </van-row>
+    <view wx:if="{{completeRecord.length>0}}">
+        <template is="completeRecord" wx:for="{{completeRecord}}" wx:key="{{index}}" data="{{...item ,...{shop: shop} }}"></template>
+    </view>
+    <view wx:else>
+        <van-row>
+            <van-col span="12" offset="6">
+                <view class="noUn">
+                    <van-icon name="passed" size="100px" color="#999"></van-icon>
+                    <view class="info">没有已完成的记录</view>
+                </view>
+            </van-col>
+        </van-row>
+    </view>
+</view>
+<!-- <template wx:for="{{batteryRecord}}" is="batteryRecord" data="{{...batteryRecord}}"></template>
+<template is="teacupRecord"></template> -->
+<!-- <view class="pending">
+    <text class="head">待处理</text>
+    <view class="main">
+
+        <van-panel class="" title="电池回收" status="PENDING" desc="描述信息" use-footer-slot>
+            <view>
+                <!-- 内容 
+                <view >订单编号: {{idCode}}</view>
+                <view >发起时间: {{startTime}}</view>
+                <view >上门时间: {{pickTime}}</view>
+            </view>
+            <view slot="footer" style="text-align:right">
+                <van-button type="primary" size="small" plain>按钮</van-button>
+            </view>
+
+        </van-panel>
+
+    </view>
+</view> -->
+<!-- <template name="record">
+    <template is="{{ type=='battery'?'batteryRecord':'teacupRecord' }}" data="{{...dataset,...{shop: shop} }}"></template>
+</template> -->
+<template name="completeRecord">
+    <template is="{{ type=='battery'?'batteryRecord':'teacupRecord' }}" data="{{...dataset,...{shop: shop} }}"></template>
+</template>
+<template name="uncompleteRecord">
+    <template is="{{ type=='battery'?'batteryRecord':'teacupRecord' }}" data="{{...dataset,...{shop: shop} }}"></template>
+</template>
+<template name="batteryRecord">
+    <van-row>
+        <van-col span="20" offset="2">
+            <view class="record-info">
+                <view class="head">
+                    <view class="title">电池回收记录</view>
+                    <view class="status">
+                        <van-icon wx:if="{{status}}" name="passed" color="#00CC00" size="20px"></van-icon>
+                        <van-icon wx:else name="clock-o" size="20px"></van-icon>
+                    </view>
+                </view>
+                <view class="line"></view>
+                <view class="main-wrap">
+                    <view class="id">订单编号: {{id}}</view>
+                    <view class="contactNumber">联系方式: {{contactNumber}}</view>
+                    <view class="submitTime">提交时间: {{submitTime}}</view>
+                    <view class="submitTime">回收地点: {{pickedPlace}}</view>
+                    <view class="batteryNum">电池数量: {{batteryNum}}</view>
+                    <view class="pickTime">上门时间: {{  pickedTime }}</view>
+                    <view class="status">当前状态: {{status?"已完成":"待处理"}}</view>
+                    <view class="status">您的留言: {{note}}</view>
+                </view>
+                <view class="line"></view>
+                <view class="oper" wx:if="{{!status}}">
+                    <van-button data-id="{{id}}" data-type="battery" custom-class="feedback" size="small" plain type="primary" bindtap="onPass">
+                        通过
+                    </van-button>
+                    <van-button data-id="{{id}}" data-type="battery" custom-class="question" size="small" plain type="danger" bindtap="onDelete">
+                        取消并删除
+                    </van-button>
+                </view>
+            </view>
+        </van-col>
+    </van-row>
+</template>
+<template name="teacupRecord">
+    <van-row>
+        <van-col span="20" offset="2">
+            <view class="record-info">
+                <view class="head">
+                    <view class="title">奶茶杯回收记录</view>
+                    <view class="status">
+                        <van-icon wx:if="{{status}}" name="passed" color="#00CC00" size="20px"></van-icon>
+                        <van-icon wx:else name="clock-o" size="20px"></van-icon>
+                    </view>
+                </view>
+                <view class="line"></view>
+                <view class="main-wrap">
+                    <view class="id">订单编号: {{id}}</view>
+                    <view class="submitTime">提交时间: {{submitTime}}</view>
+                    <view class="shopName">奶茶店: {{ shop[shopId] }}</view>
+                    <view class="cupId">奶茶杯编号: {{cupId}}</view>
+                    <view class="status">当前状态: {{status?"已完成":"待处理"}}</view>
+                </view>
+                <view class="line"></view>
+                <view class="oper" wx:if="{{!status}}">
+                    <van-button data-id="{{id}}" data-type="teacup" custom-class="feedback" size="small" plain type="primary" bindtap="onPass">
+                        通过
+                    </van-button>
+                    <van-button data-id="{{id}}" data-type="teacup" custom-class="question" size="small" plain type="danger" bindtap="onDelete">
+                        取消并删除
+                    </van-button>
+                </view>
+            </view>
+        </van-col>
+    </van-row>
+</template>
+<van-dialog id="feedback"></van-dialog>
+<van-toast id="toast"></van-toast>

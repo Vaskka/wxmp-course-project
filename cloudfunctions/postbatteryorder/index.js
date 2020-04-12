@@ -1,0 +1,59 @@
+/**
+ * 提交废电池订单
+ * over
+ */
+const GATEWAY = "https://vaskka.com/mpc"
+// wx
+const got = require('got');
+
+// 时间库
+const moment = require('moment-timezone');
+
+// 云函数入口文件
+const cloud = require('wx-server-sdk')
+
+cloud.init()
+
+// 云函数入口函数
+exports.main = async (event, context) => {
+  console.log(event);
+
+  const wxContext = cloud.getWXContext();
+
+  // 电池个数
+  let num = event.battery.num;
+  let result = {};
+  result.battery = {};
+  result.battery.num = num;
+  result.serv_time = moment.tz("Asia/Shanghai").format("YYYY-MM-DD HH:mm:SS");
+
+  let lo = event.user_location.room;
+
+  let ct = moment().format("YYYY-MM-DD HH:mm:SS");
+
+  console.log("\n\n\n---ct---:" + ct + "\n\n\n");
+
+  let resp = await got(GATEWAY + '/batteryorder/create', {
+    method: 'POST',
+    headers: {
+      accept: "*/*" 
+    },
+    json: true,
+    body: {
+      createTime: ct,
+      battery_num: num,
+      free_time: event.rest_time,
+      openid: wxContext.OPENID,
+      realLocation: "",
+      userLocation: lo,
+      note: event.note == null ? "" : event.note,
+      tel: event.tel
+    }
+
+  });
+
+  result.battery.order_id = resp.body.data.id;
+
+  return result;
+
+}

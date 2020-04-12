@@ -1,0 +1,55 @@
+<!-- miniprogram/pages/exchange/exchange.wxml -->
+<van-row>
+    <van-col span="8" offset="8">
+        <view class="avater">
+            <button class="btn" loading="{{loading}}" disabled="{{disabled}}" style="background-image: url({{user.avatarUrl}})" open-type="getUserInfo" bindgetuserinfo="onGetUserInfo"></button>
+            <text class="username">{{user.username}}</text>
+        </view>
+    </van-col>
+</van-row>
+<view class="divLine"></view>
+<van-row>
+    <van-col span="24">
+        <van-collapse accordion value="{{ activeNames }}" bind:change="onChangeCollapse">
+            <van-collapse-item name="my_point" title="我的积分" icon="balance-o" label="{{point_desc}}" value="{{ '共'+(user.tea_point+user.battery_point)+'分' }}">
+                <van-cell-group wx:if="{{user.logged}}">
+                    <van-cell title="奶茶积分" is-link value="{{ user.tea_point+'分' }}" bindtap="onTeaCupPoint" />
+                    <van-cell title="电池积分" is-link value="{{ user.battery_point+'分' }}" bindtap="onBatteryPoint" url="../points/points?type=battery&battery_point={{user.battery_point}}" />
+                    <!-- <van-cell title="如何快速赚取积分?" is-link /> -->
+                </van-cell-group>
+                <van-cell wx:else title="请先登录" icon="warn-o" value="点击头像登录" bindtap="onTapDebug"></van-cell>
+            </van-collapse-item>
+            <van-collapse-item name="my_tickets" title="我的卡券" icon="idcard" value="{{ '共'+(user.tea_tickets.length + user.doll_tickets.length)+'张' }}" label="{{tickets_label}}">
+                <view class="wrpa" wx:if="{{user.logged}}">
+                    <van-cell title="我的奶茶券" value="{{ user.tea_tickets.length+'张' }}" bindtap="onTeaTicket" is-link></van-cell>
+                    <!-- <van-cell wx:elif="{{user.logged}}" title="您还没有卡券" icon="info-o" value="如何兑换卡券?" is-link bindtap="onClickHowToGainTickets"></van-cell> -->
+                    <van-cell title="我的娃娃券" value="{{ user.doll_tickets.length+'张' }}" bindtap="onDollTicket" is-link></van-cell>
+                    <!-- 写卡券展示页 is link 指向卡券展示页 -->
+                </view>
+                <van-cell wx:else title="请先登录" icon="warn-o" value="点击头像登录" bindtap="onTapDebug"></van-cell>
+            </van-collapse-item>
+            <van-collapse-item name="my_recycle_records" title="我的回收记录" icon="records" value="{{'共'+user.recycle_records.length+'次'}}" label="{{ recycle_records_label}}">
+                <van-cell wx:if="{{  user.logged &&  user.recycle_records.length!=0 }}" title="详细记录" value="点此查看" is-link bindtap="onRecord"></van-cell>
+                <!-- <van-cell wx:elif="{{  user.logged }}" icon="info-o" title="您没有回收记录" value="如何完成一次回收?" is-link></van-cell> -->
+                <van-cell wx:elif="{{  user.logged }}" icon="info-o" title="您没有回收记录"></van-cell>
+                <van-cell wx:else title="请先登录" icon="warn-o" value="点击头像登录" bindtap="onTapDebug"></van-cell>
+            </van-collapse-item>
+            <!-- 用van-cell代替 -->
+            <van-cell name="about_us" title="关于我们" icon="friends-o" label="四川大学Env团队" is-link bindtap="onClickAboutUs"></van-cell>
+            <van-cell is-link title="后台管理" icon="manager-o" wx:if="{{isRoot}}" url="../manage/manage"></van-cell>
+        </van-collapse>
+        <van-dialog id="van-dialog" />
+        <!-- 改用Dialog -->
+        <!-- <van-popup show="{{ show }}" bind:close="onClose">关于我们</van-popup> -->
+        <!-- <view class="btn-group">
+            <template is="item" wx:for="{{button_name}}" wx:for-item="it" data="{{...it}}"></template>
+        </view> -->
+    </van-col>
+</van-row>
+<van-toast id="loading"></van-toast>
+<van-toast id="error"></van-toast>
+<template name="item">
+    <view class="btn-item">
+        <van-button custom-class="me_btn" type="default" size="large">{{ name }}</van-button>
+    </view>
+</template>
